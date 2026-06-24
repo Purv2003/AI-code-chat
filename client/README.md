@@ -1,32 +1,43 @@
-# React + TypeScript + Vite
+# AI Code Chat -- Streaming Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Full-stack AI chat interface for asking questions about code.
+Responses stream in real time using Groq's API.
 
-Currently, two official plugins are available:
+## Tech Stack
+- Frontend: React + TypeScript (Vite)
+- Backend: Node.js + Express
+- AI: Groq API (openai/gpt-oss-20b) with streaming
+- Streaming: Server-Sent Events (SSE)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Real-time streaming responses, token by token, at very low latency
+- Code-focused AI tuned for technical questions
+- Clean dark UI optimised for reading code explanations
+- Enter to send, Shift+Enter for new line
 
-## React Compiler
+## How Streaming Works
+The Node.js backend calls Groq's chat completions endpoint with
+`stream: true` and forwards each chunk via Server-Sent Events. The
+React frontend reads the stream with a ReadableStream reader and
+appends each token to the message in state -- the same approach
+used by ChatGPT and similar AI products.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Why Groq
+Groq runs inference on custom LPU hardware instead of GPUs, giving
+noticeably lower time-to-first-token and higher tokens/second than
+most hosted LLM APIs -- a good fit for a chat UI where perceived
+responsiveness matters.
 
-## Expanding the Oxlint configuration
+## Setup
+1. Clone the repo
+2. Get a free Groq API key at console.groq.com
+3. Add to server/.env: GROQ_API_KEY=your_key_here
+4. cd server && npm install && node index.js
+5. cd client && npm install && npm run dev
+6. Visit http://localhost:5173
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Screenshots
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+![Chat interface](./client/screenshots/image-1.png)
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+![Streaming response](./client/screenshots/image-2.png)
