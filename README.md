@@ -37,6 +37,8 @@ responsiveness matters.
 6. Visit http://localhost:5173
 
 ## Screenshots
+
 ![Chat interface](client/screenshots/image-1.png)
 
 ![Streaming response](client/screenshots/image-2.png)
+
